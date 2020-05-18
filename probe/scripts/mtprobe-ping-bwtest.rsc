@@ -45,8 +45,8 @@
 
 #Clean-Up Function
 :local cleanup do={
-:local avg 0;
 :if ([:find $1 "/" -1] > 0) do={
+:local avg 0;
  :for i from=0 to=([:len $1] -1) step=1 do={
   :local actualchar value=[:pick $1 $i];
   :if ($actualchar = "/") do={ :set actualchar value="," };
@@ -69,7 +69,7 @@
 :log info "$sysname $host - [$pingavgout/$jittavgout] [$packetloss] [$tcpdownload/$tcpupload]";
 
 #Send
-:local result [tool fetch url="$hivehost/results.php?id=$serialNumber&host=$host&ping=$pingavgout&jitter=$jittavgout&tcpd=$tcpdownload&tcpu=$tcpupload" output=user as-value];
+:local result [tool fetch http-method=post url="http://$hivehost/results.php?id=$serialNumber&host=$host&ping=$pingavgout&jitter=$jittavgout&tcpd=$tcpdownload&tcpu=$tcpupload" output=user as-value];
 
   :if ($result->"status" = "finished") do={
        :log info "RESULTS: OK";
