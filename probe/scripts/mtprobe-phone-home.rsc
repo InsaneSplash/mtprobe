@@ -26,10 +26,24 @@
   }
 
 #Send
-:local result [tool fetch url="http://$hivehost/ping.php?id=$serialNumber&fw=$boardFirmware&cpu=$boardCPU&mem=$boardMEMF,$boardMEMT&uptime=$boardUptime&hw=$boardName&arch=$boardArch&ping=$avgrtt" output=user as-value];
+:local result [tool fetch http-method=post url="http://$hivehost/ping.php?id=$serialNumber&fw=$boardFirmware&cpu=$boardCPU&mem=$boardMEMF,$boardMEMT&uptime=$boardUptime&hw=$boardName&arch=$boardArch&ping=$avgrtt" output=user as-value];
 
   :if ($result->"status" = "finished") do={
-       :log info "PING: OK";
+       :local statusCode ($result->"data");
+       :log info "PING: OK / CODE: $statusCode";
+       
+  :if ($result->"data" = "0") do={
+       :log info "[0] Nothing to do";
+  }
+
+  :if ($result->"data" = "1") do={
+
+  }
+
+  :if ($result->"data" = "2") do={
+
+  }
+
       } else={
        :log warn "PING FAILED";
   }
