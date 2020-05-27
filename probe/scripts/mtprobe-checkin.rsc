@@ -26,16 +26,26 @@
   }
 
 #Send
-
-:local result [tool fetch http-method=post http-header-field="Content-Type: application/x-www-form-urlencoded" url="http://$hivehost:8086/write\?db=mtprobe" http-data="stats,serial=$serialNumber cpu=$boardCPU\n stats,serial=$serialNumber memf=$boardMEMF\n stats,serial=$serialNumber memt=$boardMEMT\n stats,serial=$serialNumber ping=$avgrtt" output=user as-value];
-
-:put ($result->"data");
+:local result [tool fetch http-method=post url="http://$hivehost/ping.php?id=$serialNumber&fw=$boardFirmware&cpu=$boardCPU&mem=$boardMEMF,$boardMEMT&uptime=$boardUptime&hw=$boardName&arch=$boardArch&ping=$avgrtt" output=user as-value];
 
   :if ($result->"status" = "finished") do={
        :local statusCode ($result->"data");
-       :log info "PING DATA OK";     
+       :log info "PING: OK / CODE: $statusCode";
+       
+  :if ($result->"data" = "0") do={
+       :log info "[0] Nothing to do";
+  }
+
+  :if ($result->"data" = "1") do={
+
+  }
+
+  :if ($result->"data" = "2") do={
+
+  }
+
       } else={
-       :log warn "PING DATA FAILED";
+       :log warn "PING FAILED";
   }
 
 }
